@@ -1,0 +1,11 @@
+name: OceaniaTerra
+version: '${project.version}'
+main: com.bteoce.java.oceaniaterra.OceaniaTerra
+api-version: 1.17
+load: STARTUP
+authors: [ Coppertine ]
+description: Recreation of Terra++ as a spigot plugin
+commands:
+  tpll:
+    usage: /<command> <lat> <lon>
+    description: Tpll
