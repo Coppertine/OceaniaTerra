@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public final class OceaniaTerra extends JavaPlugin implements Listener {
     private static OceaniaTerra plugin;
@@ -26,7 +27,7 @@ public final class OceaniaTerra extends JavaPlugin implements Listener {
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this,this);
         plugin = this;
-        getCommand("tpll").setExecutor(new Tpll());
+        Objects.requireNonNull(getCommand("tpll")).setExecutor(new Tpll());
 
     }
 

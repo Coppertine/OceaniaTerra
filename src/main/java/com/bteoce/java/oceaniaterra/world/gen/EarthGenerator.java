@@ -1,22 +1,21 @@
 package com.bteoce.java.oceaniaterra.world.gen;
 
-import com.bteoce.java.oceaniaterra.OceaniaTerra;
 import net.buildtheearth.terraminusminus.generator.CachedChunkData;
 import net.buildtheearth.terraminusminus.generator.ChunkDataLoader;
 import net.buildtheearth.terraminusminus.generator.EarthGeneratorSettings;
-import net.buildtheearth.terraminusminus.substitutes.net.minecraft.block.state.IBlockState;
-import net.buildtheearth.terraminusminus.substitutes.net.minecraft.util.math.ChunkPos;
-import org.bukkit.Bukkit;
+import net.buildtheearth.terraminusminus.substitutes.BlockState;
+import net.buildtheearth.terraminusminus.substitutes.BukkitBindings;
+import net.buildtheearth.terraminusminus.substitutes.ChunkPos;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -40,24 +39,44 @@ public class EarthGenerator extends ChunkGenerator {
         final int maxY = worldInfo.getMaxHeight();
 
         try {
-            CachedChunkData terraData = this.loader.load(new ChunkPos(chunkX, chunkZ)).get();
+            CachedChunkData terraData = this.loader.load(new ChunkPos(chunkX, chunkZ)).get(); //new ChunkPos(chunkX, chunkZ)
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
 
                     int groundY = terraData.groundHeight(x, z);
                     int waterY = terraData.waterHeight(x, z);
-                    IBlockState state = terraData.surfaceBlock(x, z);
+                    //terraData.biome(x,z);
+                    BlockState state = terraData.surfaceBlock(x, z);
+
+
+                    //if (state != null) material = Material.BRICKS;
+
                     Material material = Material.GRASS_BLOCK;
-                    if (state != null) material = Material.BRICKS;
+                    // Generates mountains over 1700m only from stone
+                    int randomizer = (int) Math.floor(Math.random()*(1700-1695+1)+1695);
+                    if(groundY >= randomizer) {
+                        material = Material.STONE;
+                    }
+                    //--------------------------------------------------------
+
 
                     for (int y = minY; y < Math.min(maxY, groundY); y++) chunkData.setBlock(x, y, z, Material.STONE);
-                    if (groundY < maxY) chunkData.setBlock(x, groundY, z, material);
-                    for (int y = groundY + 1; y < Math.min(maxY, waterY); y++) chunkData.setBlock(x, y, z, Material.WATER);
+
+                    if (groundY < maxY) {
+                        if(state != null){
+                            chunkData.setBlock(x, groundY, z, BukkitBindings.getAsBlockData(state));
+                        } else {
+                            chunkData.setBlock(x, groundY, z, material);
+                        }
+                    }
+                    for (int y = groundY + 1; y <= Math.min(maxY, waterY); y++) chunkData.setBlock(x, y, z, Material.WATER);
+
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override

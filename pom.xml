@@ -95,7 +95,8 @@
         <dependency>
             <groupId>com.github.SmylerMC</groupId>
             <artifactId>terraminusminus</artifactId>
-            <version>java17-e36ff265a5-1</version>
+<!--            <version>java17-e36ff265a5-1</version>-->
+            <version>feature~bukkit-703bf8b553-1</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
